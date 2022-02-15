@@ -6,6 +6,7 @@ import { REDIRECT_URI, SCOPES, CLIENT_ID, ALBUM_ID } from "./utils/constants";
 import Colors from "./Themes/colors"
 import colors from "./Themes/colors";
 import { borderStartColor } from "react-native/Libraries/Components/View/ReactNativeStyleAttributes";
+import millisToMinutesAndSeconds from "./utils/millisToMinuteSeconds.js"
 
 // Endpoints for authorizing with Spotify
 const discovery = {
@@ -55,28 +56,24 @@ export default function App() {
     }
   }, [token]);
 
-const Song = ({artistName, albumImage, songName, albumName, duration}) => {
+const Song = ({songIndex, artistName, albumImage, songName, albumName, duration}) => {
   return(
-    <View style={styles.songStyle}>
-      <View style={styles.songImageContainer}>
-        <Image source={{ uri: albumImage}} style={{width:50, height:50,}}/>
+    <View style={styles.songStyleContainer}>
+      <Text style={styles.songIndexContainer}>{songIndex}</Text>
+      <Image source={{ uri: albumImage}} style={{width:50, height:50}}/>
+      <View style={styles.songTitleAndArtistContainer}>
+        <Text style={styles.songTitleFont} numberOfLines={1}>{songName}</Text>
+        <Text style={styles.songArtistFont} numberOfLines={1}>{artistName}</Text>
       </View>
-      <View style={styles.songNameArtistContainer}>
-        <Text style={styles.songText}>{artistName}</Text>
-        <Text style={styles.songText}>{songName}</Text>
-      </View>
-      <View style={styles.songAlbumNameContainer}>
-        <Text style={styles.songText}>{albumName}</Text>
-      </View>
-      <View style={styles.songTiming}>
-        <Text style={styles.songText}>{duration}</Text>
-      </View>
+      <Text style={styles.songAlbumFont} numberOfLines={1}>{albumName}</Text>
+      <Text style={styles.songTimeFont} numberOfLines={1}>{millisToMinutesAndSeconds(duration)}</Text>
     </View>
   );
 }
 
-const renderItem = ({item}) => (
+const renderItem = ({item, index}) => (
     <Song
+    songIndex = {index}
     artistName = {item.album.artists[0].name}
     albumImage={item.album.images[0].url}
     songName = {item.name}
@@ -87,13 +84,19 @@ const renderItem = ({item}) => (
 )
 const TopTracks = () => {
     return (
-      <SafeAreaView style={styles.topTracksContainer}>
-        <FlatList
-          data={tracks}
-          renderItem={renderItem}
-          keyExtractor={item => item.id}
-        />
-      </SafeAreaView>
+      <View style={styles.topTracksContainer}>
+        <View style={styles.topTracksTopTitle}>
+          <Image style={styles.logoTitleTopTracks} source={require("./assets/spotify-logo.png")}/>
+          <Text style={styles.myTopTracksText}>My Top Tracks</Text>
+        </View>
+        <View style={styles.topSongsContainer}>
+          <FlatList
+            data={tracks}
+            renderItem={renderItem}
+            keyExtractor={item => item.id}
+          />
+        </View>
+       </View> 
     );
   }
 
@@ -159,11 +162,11 @@ const styles = StyleSheet.create({
     marginTop: 12
   },
 
-  connectButton: 
-  {display: 'flex',
-  flexDirection: "row",
-  justifyContent: 'center',
-  alignItems:'center'
+  connectButton: {
+    display: 'flex',
+    flexDirection: "row",
+    justifyContent: 'center',
+    alignItems:'center'
   },
   
   songText: {
@@ -180,27 +183,89 @@ const styles = StyleSheet.create({
     flex: 1
   },
 
-  songStyle:
-  {display: 'flex',
-  flexDirection: "row",
-  justifyContent: 'center',
-  alignItems: 'center',
+  topSongsContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: "center",
+    alignItems: "center",
+    flex: 10
   },
 
-  songImageContainer: {
-    flex: 1,
+  topTracksTopTitle: {
     display: 'flex',
-    justifyContent: 'center',
+    backgroundColor: Colors.background,
+    flexDirection: 'row',
+    justifyContent: "center",
+    alignItems: "center",
+    flex: 1
   },
 
-  songNameContainer: {
-    flex: 1,
+  logoTitleTopTracks: {
+    height: 15,
+    width: 15,
+  },
+
+  myTopTracksText: {
+    color: "white",
+    fontSize: 24,
+    fontWeight: "bold",
+    marginLeft: 10
+  },
+
+  songStyleContainer:{
     display: 'flex',
+    flex: 1,
+    flexDirection: "row",
     justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+
+  songIndexContainer: {
+    color: Colors.gray,
+    width: 30,
+    textAlign: 'center',
+    fontSize: 12,
+  },
+
+  songTitleAndArtistContainer: {
+    display: 'flex',
+    flex: 0,
+    flexDirection: 'column',
+    width: 120,
+    marginLeft: 10,
+  },
+
+  songTitleFont: {
+    color: "white",
+    textAlign: 'center',
+    fontSize: 12
+  },
+
+  songArtistFont: {
+    color: "darkgray",
+    textAlign: 'center',
+    fontSize: 12
+  },
+
+  songAlbumFont: {
+    color: "white",
+    textAlign: 'center',
+    fontSize: 12,
+    width: 100,
+    marginLeft: 10,
+  },
+
+  songTimeFont: {
+    color: "white",
+    textAlign: 'center',
+    fontSize: 12,
+    width: 30,
+    marginLeft: 10,
   },
 
   songNameArtistContainer: {
-    flex: 1,
+    flex: 0,
     display: 'flex',
     justifyContent: 'center',
   },
