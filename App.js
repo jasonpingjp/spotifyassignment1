@@ -102,34 +102,25 @@ const TopTracks = () => {
 
 
 const ConnectWithSpotify = () => {
-    return (
-      <Pressable 
-      onPress={() => {
-        promptAsync();
-      }}
-      style={({ pressed }) => [
-        {
-          backgroundColor: pressed
-            ? colors.gray
-            : colors.spotify,
-            borderRadius: '100%',
-            height: 40,
-            width: 250,
-        },
-        styles.wrapperCustom
-      ]}>
-      {({ pressed }) => (
-        <View style = {styles.connectButton}>
-            <Image style= {{width:15,height: 15, marginTop:10}} source={require("./assets/spotify-logo.png")}/>
-            <Text style={styles.connectWithSpotifyText}>
-            {pressed ? 'CONNECT WITH SPOTIFY' : 'CONNECT WITH SPOTIFY'}
-              </Text>
-        </View>
-
-      )}
-      </Pressable>
-    );
-  }
+  return (
+    <Pressable  onPress={() => {promptAsync()}}
+    style={({ pressed }) => [
+      {
+        backgroundColor: pressed
+          ? colors.gray
+          : colors.spotify,
+          borderRadius: '100%',
+          height: 40,
+          width: 250,
+      },
+    ]}>
+    <View style = {styles.connectButton}>
+          <Image style= {{width:15,height: 15, marginTop:10}} source={require("./assets/spotify-logo.png")}/>
+          <Text style={styles.connectWithSpotifyText}>CONNECT WITH SPOTIFY</Text>
+    </View>
+    </Pressable>
+  );
+}
 
 console.log(tracks)
 if (token) {
